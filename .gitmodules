@@ -53,3 +53,6 @@
 	url = https://github.com/andrewleech/wiznet_ioLibrary_Driver.git
 	# Requires https://github.com/Wiznet/ioLibrary_Driver/pull/120
 	# url = https://github.com/Wiznet/ioLibrary_Driver.git
+[submodule "examples/usercmodule/esp-brookesia"]
+	path = examples/usercmodule/esp-brookesia
+	url = ssh://git@gitlab.espressif.cn:27227/ae_group/esp-brookesia.git

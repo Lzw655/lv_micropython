@@ -32,15 +32,15 @@ endif
 LVGL_BINDING_DIR = $(TOP)/lib/lv_bindings
 LVGL_DIR = $(LVGL_BINDING_DIR)/lvgl
 LVGL_GENERIC_DRV_DIR = $(LVGL_BINDING_DIR)/driver/generic
-INC += -I$(LVGL_BINDING_DIR)
+INC += -I$(LVGL_BINDING_DIR) -I${LVGL_DIR}
 ALL_LVGL_SRC = $(shell find $(LVGL_DIR) -type f -name '*.h') $(LVGL_BINDING_DIR)/lv_conf.h
 LVGL_PP = $(BUILD)/lvgl/lvgl.pp.c
 LVGL_MPY = $(BUILD)/lvgl/lv_mpy.c
 LVGL_MPY_METADATA = $(BUILD)/lvgl/lv_mpy.json
 QSTR_GLOBAL_DEPENDENCIES += $(LVGL_MPY)
-CFLAGS_MOD += $(LV_CFLAGS) 
+CFLAGS_MOD += $(LV_CFLAGS)
 
-$(LVGL_MPY): $(ALL_LVGL_SRC) $(LVGL_BINDING_DIR)/gen/gen_mpy.py 
+$(LVGL_MPY): $(ALL_LVGL_SRC) $(LVGL_BINDING_DIR)/gen/gen_mpy.py
 	$(ECHO) "LVGL-GEN $@"
 	$(Q)mkdir -p $(dir $@)
 	$(Q)$(CPP) $(CFLAGS_MOD) -DPYCPARSER -x c -I $(LVGL_BINDING_DIR)/pycparser/utils/fake_libc_include $(INC) $(LVGL_DIR)/lvgl.h > $(LVGL_PP)
@@ -63,7 +63,7 @@ INC += -I$(LODEPNG_DIR)
 LODEPNG_CFLAGS += -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_DISK -DLODEPNG_NO_COMPILE_ALLOCATORS
 CFLAGS_MOD += $(LODEPNG_CFLAGS)
 
-$(LODEPNG_MODULE): $(ALL_LODEPNG_SRC) $(LVGL_BINDING_DIR)/gen/gen_mpy.py 
+$(LODEPNG_MODULE): $(ALL_LODEPNG_SRC) $(LVGL_BINDING_DIR)/gen/gen_mpy.py
 	$(ECHO) "LODEPNG-GEN $@"
 	$(Q)mkdir -p $(dir $@)
 	$(Q)$(CPP) $(LODEPNG_CFLAGS) -DPYCPARSER -x c $(INC) -I $(LVGL_BINDING_DIR)/pycparser/utils/fake_libc_include $(LODEPNG_DIR)/lodepng.h > $(LODEPNG_PP)
