@@ -6,13 +6,19 @@
 import lvgl as lv
 import ui_images
 
+print("Loading UI...")
+
 dispp = lv.disp_get_default()
 theme = lv.theme_basic_init(dispp)
 dispp.set_theme(theme)
 
-font_H1 = lv.font_load("A:ui_font_H1.bin")
-font_Subtitle = lv.font_load("A:ui_font_Subtitle.bin")
-font_Title = lv.font_load("A:ui_font_Title.bin")
+# font_H1 = lv.font_load("A:ui_font_H1.bin")
+# font_Subtitle = lv.font_load("A:ui_font_Subtitle.bin")
+# font_Title = lv.font_load("A:ui_font_Title.bin")
+
+font_H1 = lv.font_montserrat_14()
+font_Subtitle = lv.font_montserrat_14()
+font_Title = lv.font_montserrat_14()
 
 def ui_theme_set(idx):
    return

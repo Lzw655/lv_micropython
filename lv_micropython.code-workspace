@@ -1,0 +1,95 @@
+{
+    // https://code.visualstudio.com/docs/editor/workspaces
+    // https://code.visualstudio.com/docs/editor/multi-root-workspaces
+    // https://code.visualstudio.com/docs/editor/variables-reference
+
+    "folders": [
+        {
+            "path": "."
+        },
+    ],
+    // extensions.json section
+    "extensions": {
+        "recommendations": [
+            "ms-vscode.cpptools",              // common C/C++ support
+            "ms-vscode.cpptools-themes",       // general C/C++ theme
+        ],
+        "unwantedRecommendations": [
+        ]
+    },
+    // settings.json section
+    "settings": {
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "cmake.configureOnOpen": false,
+        "files.associations": {
+            "*.h": "c",
+            "*.hpp": "cpp",
+            "*.c": "c",
+            "*.cpp": "cpp",
+            "array": "cpp",
+            "string": "cpp",
+            "string_view": "cpp",
+            "unordered_map": "cpp",
+            "deque": "cpp",
+            "list": "cpp",
+            "unordered_set": "cpp",
+            "vector": "cpp",
+            "initializer_list": "cpp"
+        },
+        "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    },
+    // tasks.json section
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "type": "shell",
+                "label": "Build",
+                "windows": {
+                },
+                "linux": {
+                    "command": " make USER_C_MODULES=${workspaceFolder}/examples/usercmodule LV_CFLAGS=\"-DLV_LVGL_H_INCLUDE_SIMPLE\" DEBUG=1 -C ${workspaceFolder}/ports/unix"
+                },
+                "osx": {
+                },
+                "group": "build"
+            },
+        ],
+    },
+    // launch.json section
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+        {
+            "name": "Debug With GDB",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/ports/unix/micropython",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "windows": {
+                "MIMode": "gdb"
+            },
+            "linux": {
+                "MIMode": "gdb",
+            },
+            "osx": {
+                "MIMode": "lldb"
+            },
+            "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+            ],
+            "preLaunchTask": "Build"
+        }
+        ]
+    },
+}

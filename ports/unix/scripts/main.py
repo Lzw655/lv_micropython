@@ -12,9 +12,11 @@ def run_python_file(file_path):
 
 if __name__ == '__main__':
     # Initialize LVGL and SDL
+    print("Initializing LVGL and SDL...")
     lv.init()
     SDL.init()
 
+    print("Registering display and mouse drivers...")
     # Register SDL display driver.
     draw_buf = lv.disp_draw_buf_t()
     buf1_1 = bytearray(480*10)
@@ -26,7 +28,6 @@ if __name__ == '__main__':
     disp_drv.hor_res = 800
     disp_drv.ver_res = 480
     disp_drv.register()
-
     # Regsiter SDL mouse driver
     indev_drv = lv.indev_drv_t()
     indev_drv.init()
@@ -35,16 +36,16 @@ if __name__ == '__main__':
     indev_drv.register()
 
     # Create esp-brookesia phone object
-    brookesia.create_phone()
+    # brookesia.create_phone()
 
-    directory = "./scripts"
-    exclude_file = "main.py"
+    directory = "./"
+    exclude_file = ["main.py", "ui_images.py"]
     file_mod_times = {}
 
     while True:
         try:
             for filename in os.listdir(directory):
-                if filename.endswith(".py") and filename != exclude_file:
+                if filename.endswith(".py") and filename not in exclude_file:
                     file_path = directory + "/" + filename
                     stat = os.stat(file_path)
                     last_mod_time = stat[8]
@@ -52,7 +53,7 @@ if __name__ == '__main__':
                     if file_path not in file_mod_times or file_mod_times[file_path] != last_mod_time:
                         file_mod_times[file_path] = last_mod_time
 
-                        print(f"Detected change in {file_path}. Restarting...")
+                        print(f"Detected change in {file_path}. Running...")
                         _thread.start_new_thread(run_python_file, (file_path,))
 
             time.sleep(1)
