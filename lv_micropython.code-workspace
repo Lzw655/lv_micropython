@@ -50,7 +50,7 @@
                 "windows": {
                 },
                 "linux": {
-                    "command": " make USER_C_MODULES=${workspaceFolder}/examples/usercmodule LV_CFLAGS=\"-DLV_LVGL_H_INCLUDE_SIMPLE\" DEBUG=1 -C ${workspaceFolder}/ports/unix"
+                    "command": " bear -- make USER_C_MODULES=${workspaceFolder}/examples/usercmodule LV_CFLAGS=\"-DLV_LVGL_H_INCLUDE_SIMPLE\" DEBUG=1 -C ${workspaceFolder}/ports/unix; cp ${workspaceFolder}/ports/unix/micropython ${workspaceFolder}/scripts/micropython",
                 },
                 "osx": {
                 },
@@ -66,10 +66,12 @@
             "name": "Debug With GDB",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/ports/unix/micropython",
-            "args": [],
+            "program": "${workspaceFolder}/scripts/micropython",
+            "args": [
+                "-O0", "-i", "main.py",
+            ],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/scripts",
             "environment": [],
             "externalConsole": false,
             "windows": {
@@ -82,13 +84,18 @@
                 "MIMode": "lldb"
             },
             "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
+                {
+                    "description": "Ignore SIGUSR1 signal",
+                    "text": "-exec handle SIGUSR1 nostop noprint",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
             ],
-            "preLaunchTask": "Build"
+            "preLaunchTask": "Build",
         }
         ]
     },
