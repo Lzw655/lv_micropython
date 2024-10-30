@@ -39,8 +39,11 @@ indev_drv.register()
 
 print( "Free memory: " + str(gc.mem_free()) )
 
-import ui
+# import ui
 # import ui_images
+
+# phone = brookesia.phone()
+# phone.installApp()
 
 print( "Free memory: " + str(gc.mem_free()) )
 
