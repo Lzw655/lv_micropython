@@ -40,10 +40,25 @@ indev_drv.register()
 print( "Free memory: " + str(gc.mem_free()) )
 
 # import ui
-# import ui_images
+import ui_images
 
-# phone = brookesia.phone()
-# phone.installApp()
+class AppTest(brookesia.PhoneApp):
+    def __init__(self):
+        super().__init__("test", ui_images.ui_img_weather_1_png, True)
+        self.register_run_callback(self.run)
+        self.register_back_callback(self.back)
+
+    def run(void):
+        print("Running")
+
+    def back(void):
+        print("Back")
+
+phone = brookesia.Phone()
+phone.begin()
+
+app_test = AppTest()
+phone.install_app(app_test)
 
 print( "Free memory: " + str(gc.mem_free()) )
 
