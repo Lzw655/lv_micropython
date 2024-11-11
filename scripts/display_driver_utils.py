@@ -2,6 +2,7 @@ import usys as sys
 sys.path.append('') # See: https://github.com/micropython/micropython/issues/6419
 
 import lvgl as lv
+import ui_images
 
 try:
     import lv_utils
@@ -13,7 +14,7 @@ ORIENT_LANDSCAPE = False
 ORIENT_PORTRAIT  = True
 
 class driver:
-    
+
     def __init__(self,width=420,height=320,orientation=ORIENT_PORTRAIT, asynchronous=False, exception_sink=None, defaultGroup=True):
 
         if not lv.is_initialized():
@@ -57,10 +58,19 @@ class driver:
         # Register SDL mouse driver
 
         indev_drv = lv.indev_drv_t()
-        indev_drv.init() 
+        indev_drv.init()
         indev_drv.type = lv.INDEV_TYPE.POINTER;
         indev_drv.read_cb = SDL.mouse_read;
-        indev_drv.register();
+        indev = indev_drv.register();
+
+        cursor = lv.img(lv.scr_act())
+        cursor.set_src(ui_images.ui_img_mouse_cursor_icon_png)
+        indev.set_cursor(cursor)
+
+        # LV_IMG_DECLARE(mouse_cursor_icon);                   /*Declare the image file.*/
+        # lv_obj_t * cursor_obj = lv_img_create(lv_scr_act()); /*Create an image object for the cursor*/
+        # lv_img_set_src(cursor_obj, &mouse_cursor_icon);      /*Set the image source*/
+        # lv_indev_set_cursor(mouse_indev, cursor_obj);        /*Connect the image  object to the driver*/
 
         # Register keyboard driver
 
@@ -70,10 +80,10 @@ class driver:
         keyboard_drv.read_cb = SDL.keyboard_read
         self.keyboard = keyboard_drv.register()
         self.keyboard.set_group(self.group)
-        
+
         self.type = "SDL"
         print("Running the SDL lvgl version")
-        
+
     def init_gui_ili9341(self):
 
         # Initialize ILI9341 display
@@ -92,7 +102,7 @@ class driver:
             # the following are the settings for the Lolin tft 2.4 display
             # self.disp = ili9341(miso=19,mosi=23,clk=18, cs=26, dc=5, rst=-1, power=-1, backlight=-1, spihost=esp.VSPI_HOST)
             # self.touch = xpt2046(spihost=esp.VSPI_HOST,cal_x0=3751, cal_x1 = 210, cal_y0=3906, cal_y1 = 283, transpose=True)
-            
+
             self.disp = ili9341()
             self.touch = xpt2046()
 
@@ -103,7 +113,7 @@ class driver:
             # self.disp = ili9341(miso=19,mosi=23,clk=18, cs=26, dc=5, rst=-1, power=-1, backlight=-1, backlight_on=0,
             #                     spihost=esp.VSPI_HOST, width=320, height=240, rot=LANDSCAPE)
             # self.touch = xpt2046(spihost=esp.VSPI_HOST,cal_x0=3799, cal_x1 = 353, cal_y0=220, cal_y1 = 3719, transpose=False)
-            
+
             # Register xpt2046 touch driver
             self.disp = ili9341(width=320, height=240, rot=LANDSCAPE)
             self.touch = xpt2046(cal_x0=3799, cal_x1 = 353, cal_y0=220, cal_y1 = 3719,transpose = False)
@@ -112,14 +122,14 @@ class driver:
             raise RuntimeError("Invalid orientation")
 
         self.type="ili9341"
-        
+
         '''
         # Register raw resistive touch driver (remove xpt2046 initialization first)
         import rtch
         touch = rtch.touch(xp = 32, yp = 33, xm = 25, ym = 26, touch_rail = 27, touch_sense = 33)
         touch.init()
         indev_drv = lv.indev_drv_t()
-        lv.indev_drv_init(indev_drv) 
+        lv.indev_drv_init(indev_drv)
         indev_drv.type = lv.INDEV_TYPE.POINTER;
         indev_drv.read_cb = touch.read;
         lv.indev_drv_register(indev_drv);
@@ -129,22 +139,22 @@ class driver:
 
             import ttgo
             from axp_constants import AXP202_VBUS_VOL_ADC1,AXP202_VBUS_CUR_ADC1,AXP202_BATT_CUR_ADC1,AXP202_BATT_VOL_ADC1
-                
+
             watch = ttgo.Watch()
             tft = watch.tft
             power = watch.pmu
             power.adc1Enable(AXP202_VBUS_VOL_ADC1
-                             | AXP202_VBUS_CUR_ADC1 
+                             | AXP202_VBUS_CUR_ADC1
                              | AXP202_BATT_CUR_ADC1
                              | AXP202_BATT_VOL_ADC1, True)
             watch.lvgl_begin()
             watch.tft.backlight_fade(100)
 
-            self.type="t-watch"            
+            self.type="t-watch"
             print("Running lvgl on the LilyGo t-watch 2020")
-            
+
     def init_gui(self):
-        
+
         # Identify platform and initialize it
 
         try:
@@ -158,7 +168,7 @@ class driver:
             return
         except ImportError:
             pass
-            
+
         try:
             self.init_gui_SDL()
             return
@@ -166,4 +176,3 @@ class driver:
             pass
 
         raise RuntimeError("Could not find a suitable display driver!")
-

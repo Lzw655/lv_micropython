@@ -14,6 +14,7 @@ def get_phone_instance():
     global phone
 
     if phone is None:
+        print("Initializing ESP-Brookesia phone...")
         phone = brookesia.Phone()
         phone.begin()
 
